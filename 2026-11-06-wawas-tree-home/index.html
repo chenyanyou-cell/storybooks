@@ -294,5 +294,49 @@ root.addEventListener('keydown',e=>{e.stopPropagation();if(e.key==='Escape')clos
 window.__game={version:2,status,select,options,today,get state(){return {qi,stars:{...stars},current,queue:queue.map(([p,w])=>[p,w.word]),locked,missed};},data:D};
 })();
 </script>
-</body>
+<style id="crosslink-style">
+/* storybook-crosslink-v1 */
+#game-launchers{flex:0 0 auto;display:flex;justify-content:center;align-items:center;gap:16px;padding:8px 12px;background:var(--bg,#f4f7ec);box-sizing:border-box}
+#game-launchers[hidden],#game-all-link[hidden],#game-all-small[hidden],#game-launchers:has(#game-launch[hidden]),body:has(> #game:not([hidden])) #game-all-small{display:none!important}
+#game-launchers #game-launch{position:static;transform:none;min-height:80px;box-sizing:border-box;margin:0;max-width:100%}
+#game-all-link{display:flex;align-items:center;justify-content:center;min-height:80px;box-sizing:border-box;padding:12px 24px;border:3px solid #32653e;border-radius:28px;background:#e1f2cc;color:#263d29;text-decoration:none;font:800 22px/1.3 system-ui,sans-serif;text-align:center}
+#game-all-small{display:inline-flex;align-items:center;justify-content:center;flex:0 0 44px;width:44px;min-height:44px;border:2px solid #32653e;border-radius:50%;background:#fff3c4;text-decoration:none;font-size:24px;box-sizing:border-box}
+#game-all-link:focus-visible,#game-all-small:focus-visible{outline:4px solid #111;outline-offset:3px}
+@media(max-width:600px){#game-launchers{flex-direction:column;gap:8px;padding:8px}#game-all-link{width:100%;font-size:20px}#game-launchers #game-launch{min-height:80px;padding:4px 14px}#game-launchers #game-launch img{width:58px;height:58px}}
+</style><script id="crosslink-script">
+/* storybook-crosslink-v1 */
+(()=>{'use strict';
+function init(){
+ if(document.getElementById('game-all-small'))return;
+ const small=document.createElement('a');small.id='game-all-small';small.textContent='🚀';small.setAttribute('aria-label','玩全部單字 Play all words');
+ let href='../word-game/index.html';
+ const parts=location.pathname.split('/');let slug=parts.at(-2);
+ try{slug=decodeURIComponent(slug||'');}catch(e){slug='';}
+ if(slug&&slug!=='.'&&slug!=='..'&&!/[\\/]/.test(slug))href+='?from='+encodeURIComponent(slug);
+ small.href=href;
+ const header=document.querySelector('body > header');if(header)header.append(small);else document.body.prepend(small);
+ let launch=null,root=null,end=null,wrap=null,all=null;
+ const observer=new MutationObserver(sync);
+ function sync(){
+  const b=document.getElementById('game-launch');
+  if(b&&b!==launch){launch=b;wrap=document.getElementById('game-launchers');
+   if(!wrap){wrap=document.createElement('div');wrap.id='game-launchers';
+    const footer=document.querySelector('body > footer');document.body.insertBefore(wrap,footer||null);}
+   wrap.append(launch);all=document.getElementById('game-all-link');
+   if(!all){all=document.createElement('a');all.id='game-all-link';all.href=href;all.textContent='玩全部單字 🚀';all.setAttribute('aria-label','玩全部單字 Play all words');wrap.append(all);}
+   observer.observe(launch,{attributes:true,attributeFilter:['hidden']});
+  }
+  const g=document.getElementById('game');if(g&&g!==root){root=g;observer.observe(root,{attributes:true,attributeFilter:['hidden']});}
+  const last=document.querySelector('.page:last-child');if(last&&last!==end){end=last;observer.observe(end,{attributes:true,attributeFilter:['class']});}
+  const open=!!root&&!root.hidden;
+  if(small.hidden!==open)small.hidden=open;
+  const hide=!launch||launch.hidden||!end||!end.classList.contains('on')||open||document.hidden;
+  if(all&&all.hidden!==hide)all.hidden=hide;
+ }
+ observer.observe(document.body,{childList:true,subtree:true});
+ document.addEventListener('visibilitychange',sync);sync();
+}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
+})();
+</script></body>
 </html>
